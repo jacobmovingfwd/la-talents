@@ -1,0 +1,2 @@
+# la-talents
+Talent automations,
