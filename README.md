@@ -14,7 +14,9 @@ Talent automations for Foundry VTT, built on top of [Lancer Automations](https:/
 - **Spotter** (ranks 1-3): Particularize (handled by the Lancer system), Panopticon, Bentham/Foucault Elimination.
 
 ## Install
-Clone or copy this folder into your Foundry `Data/modules/` folder. The folder name must be `la-talents`.
+- **Manifest URL:** paste this into Foundry under Add-on Modules > Install Module > Manifest URL:
+  `https://raw.githubusercontent.com/jacobmovingfwd/la-talents/main/module.json`
+- **Manual:** clone or copy this folder into your Foundry `Data/modules/` folder. The folder name must be `la-talents`.
 
 ## License
 GPL-3.0. See [LICENSE](LICENSE).
