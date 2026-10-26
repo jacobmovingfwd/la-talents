@@ -409,7 +409,9 @@ export function registerHunter(api) {
                         return a.checkGate(reactorToken, 'hunter_disdainful_blade');
                     },
                     activationCode: async function (triggerType, data, reactorToken, item, name, a) {
-                        await disdainfulBlade(a, reactorToken);
+                        // Wait until the attack card (showing the hit) is printed, so the offer doesn't appear first.
+                        const run = async () => { await disdainfulBlade(a, reactorToken); };
+                        if (!a.afterFlow(data, run)) await run();
                     }
                 }
             ]
