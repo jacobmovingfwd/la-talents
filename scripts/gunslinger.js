@@ -181,6 +181,7 @@ export function registerGunslinger(api) {
                     activationType: 'code',
                     activationMode: 'instead',
                     evaluate: function (triggerType, data, reactorToken, item, name, a) {
+                        if (data.weapon?.system?.disabled || data.weapon?.system?.destroyed) return false;   // the attack will be refused anyway
                         const rankOf = (actor) => { const t = actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('gunslinger')); return t ? (Number(t.system?.curr_rank) || 1) : 0; };
                         if (rankOf(reactorToken.actor) < 3) return false;
                         const w = data.weapon;

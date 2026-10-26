@@ -247,6 +247,7 @@ export function registerSkirmisher(api) {
                     activationType: 'code',
                     activationMode: 'instead',
                     evaluate: function (triggerType, data, reactorToken, item, name, a) {
+                        if (data.weapon?.system?.disabled || data.weapon?.system?.destroyed) return false;   // the attack will be refused anyway
                         const skirmisherRank = (actor) => { const t = actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('skirmisher')); return t ? (Number(t.system?.curr_rank) || 1) : 0; };
                         if (skirmisherRank(reactorToken.actor) < 2) return false;
                         const msgs = game.messages.contents;

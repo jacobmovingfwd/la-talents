@@ -181,6 +181,7 @@ export function registerBonded(api) {
                     isReaction: true, checkReaction: true,
                     activationType: 'code', activationMode: 'instead',
                     evaluate: function (triggerType, data, reactorToken, item, name, a) {
+                        if (data.weapon?.system?.disabled || data.weapon?.system?.destroyed) return false;   // the attack will be refused anyway
                         const t = reactorToken.actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('bonded'));
                         if (!t || (Number(t.system?.curr_rank) || 1) < 3) return false;
                         const mateId = reactorToken.actor.getFlag('la-talents', 'bondmate');

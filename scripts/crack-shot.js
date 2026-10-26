@@ -138,6 +138,7 @@ export function registerCrackShot(api) {
                     checkReaction: false,
                     activationType: 'code', activationMode: 'instead',
                     evaluate: function (triggerType, data, reactorToken, item, name, a) {
+                        if (data.weapon?.system?.disabled || data.weapon?.system?.destroyed) return false;   // the attack will be refused anyway
                         const t = reactorToken.actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('crack_shot'));
                         if (!t || (Number(t.system?.curr_rank) || 1) < 2) return false;
                         const w = data.weapon;
