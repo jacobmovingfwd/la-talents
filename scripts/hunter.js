@@ -293,13 +293,19 @@ async function disdainfulBlade(a, token) {
         weapon = weapons[pick?.choiceIdx];
         if (!weapon) return;
     }
-    const range = (await a.getMaxItemRanges_WithBonus(weapon, token.actor))?.Thrown || 5;
+    const throwRange = (await a.getMaxItemRanges_WithBonus(weapon, token.actor))?.Thrown || 5;
+    // The throw is an attack with an Auxiliary melee weapon, so if Lunge is still available this round the
+    // thrower can fly 3 spaces first (Lunge is offered when the throw starts): reach is Thrown range + 3.
+    const lungeReady = a.checkGate(token, 'hunter_lunge');
+    const range = throwRange + (lungeReady ? 3 : 0);
     const picked = await a.chooseToken(token, {
         range,
         count: 1,
         includeSelf: false,
         title: 'DISDAINFUL BLADE',
-        description: `Choose a target within Range ${range}.`
+        description: lungeReady
+            ? `Choose a target within Range ${throwRange}, or up to ${range} spaces away if you Lunge (3 spaces) first.`
+            : `Choose a target within Range ${throwRange}.`
     });
     const target = picked?.[0];
     if (!target) return;
