@@ -5,7 +5,7 @@
 //  - Shepherd Drone Protocol: move a drone you control up to 4 spaces if it is within Sensors. A macro:
 //      game.modules.get('la-talents').api.shepherd()             (uses the selected token)
 //    Existing drones: game.modules.get('la-talents').api.applyShepherdHP()
-//  Ranks 2 (Energized Swarm) and 3 (Invigorate) are not built yet.
+//  Ranks 2 (Energized Swarm) and 3 (Invigorate) are in drone-swarm.js.
 
 const FLAG_HP = 'shepherdHP';
 
@@ -15,15 +15,15 @@ export function droneRank(actor) {
     return talent ? (Number(talent.system?.curr_rank) || 1) : 0;
 }
 
-const tokenOf = (t) => t?.actor ? t : (t?.getActiveTokens?.()[0] ?? canvas.tokens.controlled[0]);
+export const tokenOf = (t) => t?.actor ? t : (t?.getActiveTokens?.()[0] ?? canvas.tokens.controlled[0]);
 
-function isDrone(actor) {
+export function isDrone(actor) {
     if (!actor || actor.type !== 'deployable') return false;
     if (String(actor.system?.type ?? '').toLowerCase() === 'drone') return true;
     return (actor.system?.tags ?? []).some(t => t?.lid === 'tg_drone' || t?.id === 'tg_drone');
 }
 
-function ownedBy(drone, commander) {
+export function ownedBy(drone, commander) {
     const ids = [commander.id, commander.token?.baseActor?.id, commander.uuid].filter(Boolean);
     const ref = (v) => v?.value?.id ?? v?.value?.uuid ?? v?.id ?? (typeof v === 'string' ? v : null);
     const owners = [ref(drone.system?.owner), ref(drone.system?.deployer)].filter(Boolean);

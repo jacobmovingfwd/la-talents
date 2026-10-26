@@ -1,4 +1,4 @@
-// Siege Specialist talent. Built so far: ranks 1 and 2.
+// Siege Specialist talent, ranks 1-3 (rank 3, Collateral Damage, is in siege-collateral.js).
 //  Rank 1, Jackhammer: needs a Cannon. As a quick action, fire a jackhammer round at a Size 1 section of an
 //    object within Range: 10 AP Kinetic to the object, and every character adjacent to the target is knocked back
 //    2 spaces and takes 2 Kinetic. This is a quick action with no item to click, so it is a macro:
@@ -8,7 +8,6 @@
 //  Rank 2, Impact: 1/round, before rolling an attack with a Cannon, all characters adjacent to you must pass a
 //    Hull save or be knocked back 1 space and knocked Prone. You are then pushed 1 space in any direction.
 //    Offered at the start of the attack. The save is rolled against your Save target.
-//  Rank 3 (Collateral Damage) is not built yet.
 
 export function siegeRank(actor) {
     const talent = actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent'

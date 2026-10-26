@@ -16,11 +16,13 @@ import { registerSpotter } from './spotter.js';
 import { registerSkirmisher, syncSkirmisherMech } from './skirmisher.js';
 import { registerGunslinger, syncGunslingerMech } from './gunslinger.js';
 import { registerHunter, syncHunterMech } from './hunter.js';
-import { syncDuelistMech } from './duelist.js';
-import { registerNuclearCavalier } from './nuclear-cavalier.js';
+import { registerDuelist, syncDuelistMech } from './duelist.js';
+import { registerNuclearCavalier, syncNuclearMech } from './nuclear-cavalier.js';
 import { registerSiegeSpecialist } from './siege-specialist.js';
+import { registerCollateralDamage } from './siege-collateral.js';
 import { registerGreaseMonkey } from './grease-monkey.js';
 import { registerDroneCommander } from './drone-commander.js';
+import { registerDroneSwarm } from './drone-swarm.js';
 
 const TALENT_LID = 't_vanguard';
 const BONUS_ID = 'vanguard-cqb-accuracy';
@@ -104,9 +106,9 @@ Hooks.once('lancer-automations.ready', (api) => {
     try { registerGunslinger(api); }
     catch (err) { console.error('la-talents | Gunslinger registration failed', err); }
     for (const [name, register] of [
-        ['Hunter', registerHunter], ['Nuclear Cavalier', registerNuclearCavalier],
-        ['Siege Specialist', registerSiegeSpecialist], ['Grease Monkey', registerGreaseMonkey],
-        ['Drone Commander', registerDroneCommander]
+        ['Hunter', registerHunter], ['Duelist', registerDuelist], ['Nuclear Cavalier', registerNuclearCavalier],
+        ['Siege Specialist', registerSiegeSpecialist], ['Collateral Damage', registerCollateralDamage],
+        ['Grease Monkey', registerGreaseMonkey], ['Drone Commander', registerDroneCommander], ['Drone Swarm', registerDroneSwarm]
     ]) {
         try { register(api); }
         catch (err) { console.error(`la-talents | ${name} registration failed`, err); }
@@ -118,7 +120,7 @@ Hooks.once('lancer-automations.ready', (api) => {
         clearTimeout(timer);
         timer = setTimeout(async () => {
             for (const actor of game.actors.filter(a => a.type === 'mech')) {
-                try { await syncMech(api, actor); await syncSkirmisherMech(api, actor); await syncGunslingerMech(api, actor); await syncHunterMech(api, actor); await syncDuelistMech(api, actor); }
+                try { await syncMech(api, actor); await syncSkirmisherMech(api, actor); await syncGunslingerMech(api, actor); await syncHunterMech(api, actor); await syncDuelistMech(api, actor); await syncNuclearMech(api, actor); }
                 catch (err) { console.error('la-talents | sync failed for', actor.name, err); }
             }
         }, 500);
