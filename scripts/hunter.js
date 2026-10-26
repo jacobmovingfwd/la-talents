@@ -129,7 +129,7 @@ async function lunge(a, token, data) {
     // Targets are usually not chosen yet at this point (the Attack HUD picks them later), so Lunge
     // works with or without a pre-selected target. Reach is 3 flown + the greater of the weapon's Threat and Thrown range. Only an adjacent target skips Lunge (a player may lunge just to become Engaged).
     // Thrown counts as a melee attack, so the attack reach is the greater of Threat and Thrown range.
-    const ranges = a.getMaxWeaponRanges_WithBonus(data.weapon) ?? {};
+    const ranges = (await a.getMaxItemRanges_WithBonus(data.weapon, token.actor)) ?? {};   // includes the Thrown tag, with bonuses
     const threat = Math.max(Number(ranges.Threat) || 1, Number(ranges.Thrown) || 0);
     const REACH = threat + 3;
     let target = canvas.tokens.get(data.targets?.[0]?.id) ?? null;
@@ -266,7 +266,7 @@ async function disdainfulBlade(a, token) {
         weapon = weapons[pick?.choiceIdx];
         if (!weapon) return;
     }
-    const range = a.getMaxWeaponRanges_WithBonus(weapon).Thrown || 5;
+    const range = (await a.getMaxItemRanges_WithBonus(weapon, token.actor))?.Thrown || 5;
     const picked = await a.chooseToken(token, {
         range,
         count: 1,
@@ -298,7 +298,7 @@ export function registerHunter(api) {
                         const t = reactorToken.actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('hunter'));
                         if (!t || (Number(t.system?.curr_rank) || 1) < 2) return false;
                         const w = data.weapon;
-                        if (!w || w.type !== 'mech_weapon' || String(w.system?.size ?? '').toLowerCase() !== 'auxiliary') return false;
+                        if (!w || w.system?.disabled || w.system?.destroyed || w.type !== 'mech_weapon' || String(w.system?.size ?? '').toLowerCase() !== 'auxiliary') return false;
                         if (String(w.system?.active_profile?.type ?? w.system?.type ?? '').toUpperCase() !== 'MELEE') return false;
                         if (data.flowState?.la_extraData?.is_throw) return false;
                         return ![...(w.system?.active_profile?.all_tags ?? []), ...(w.system?.tags ?? [])].some(x => x?.lid === 'tg_thrown' || x?.id === 'tg_thrown');
@@ -339,7 +339,7 @@ export function registerHunter(api) {
                         const t = reactorToken.actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('hunter'));
                         if (!t) return false;
                         const w = data.weapon;
-                        if (!w || w.type !== 'mech_weapon' || String(w.system?.size ?? '').toLowerCase() !== 'auxiliary') return false;
+                        if (!w || w.system?.disabled || w.system?.destroyed || w.type !== 'mech_weapon' || String(w.system?.size ?? '').toLowerCase() !== 'auxiliary') return false;
                         if (String(w.system?.active_profile?.type ?? w.system?.type ?? '').toUpperCase() !== 'MELEE') return false;
                                                 return a.checkGate(reactorToken, 'hunter_lunge');
                     },
