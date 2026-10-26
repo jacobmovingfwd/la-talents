@@ -7,7 +7,9 @@
 //  - Spotter: see spotter.js
 //  - Skirmisher: see skirmisher.js
 //  - Gunslinger: see gunslinger.js
-//  - Hunter, Duelist, Nuclear Cavalier, Siege Specialist, Grease Monkey, Drone Commander: see their own files
+//  - Everything else (Hunter, Duelist, Nuclear Cavalier, Siege Specialist, Grease Monkey, Drone Commander, Ace, Bonded,
+//    Brawler, Brutal, Centimane, Combined Arms, Crack Shot, Engineer, Executioner, Hacker, Heavy Gunner, Infiltrator,
+//    Juggernaut, Leader, Stormbringer, Tactician, Technophile): see their own files
 
 import { registerWalkingArmory } from './walking-armory.js';
 import { registerSemperVigilo } from './vanguard-overwatch.js';
@@ -23,6 +25,23 @@ import { registerCollateralDamage } from './siege-collateral.js';
 import { registerGreaseMonkey } from './grease-monkey.js';
 import { registerDroneCommander } from './drone-commander.js';
 import { registerDroneSwarm } from './drone-swarm.js';
+import { registerAce, syncAceMech } from './ace.js';
+import { registerBonded, syncBondedAll } from './bonded.js';
+import { registerBrawler, syncBrawlerMech } from './brawler.js';
+import { registerBrutal } from './brutal.js';
+import { registerCentimane } from './centimane.js';
+import { registerCombinedArms, syncCombinedArmsMech } from './combined-arms.js';
+import { registerCrackShot } from './crack-shot.js';
+import { registerEngineer, syncEngineerMech } from './engineer.js';
+import { registerExecutioner } from './executioner.js';
+import { registerHacker } from './hacker.js';
+import { registerHeavyGunner } from './heavy-gunner.js';
+import { registerInfiltrator } from './infiltrator.js';
+import { registerJuggernaut, syncJuggernautMech } from './juggernaut.js';
+import { registerLeader } from './leader.js';
+import { registerStormbringer } from './stormbringer.js';
+import { registerTactician, syncTacticianMech } from './tactician.js';
+import { syncTechnophileMech } from './technophile.js';
 
 const TALENT_LID = 't_vanguard';
 const BONUS_ID = 'vanguard-cqb-accuracy';
@@ -108,7 +127,12 @@ Hooks.once('lancer-automations.ready', (api) => {
     for (const [name, register] of [
         ['Hunter', registerHunter], ['Duelist', registerDuelist], ['Nuclear Cavalier', registerNuclearCavalier],
         ['Siege Specialist', registerSiegeSpecialist], ['Collateral Damage', registerCollateralDamage],
-        ['Grease Monkey', registerGreaseMonkey], ['Drone Commander', registerDroneCommander], ['Drone Swarm', registerDroneSwarm]
+        ['Grease Monkey', registerGreaseMonkey], ['Drone Commander', registerDroneCommander], ['Drone Swarm', registerDroneSwarm],
+        ['Ace', registerAce], ['Bonded', registerBonded], ['Brawler', registerBrawler], ['Brutal', registerBrutal],
+        ['Centimane', registerCentimane], ['Combined Arms', registerCombinedArms], ['Crack Shot', registerCrackShot],
+        ['Engineer', registerEngineer], ['Executioner', registerExecutioner], ['Hacker', registerHacker],
+        ['Heavy Gunner', registerHeavyGunner], ['Infiltrator', registerInfiltrator], ['Juggernaut', registerJuggernaut],
+        ['Leader', registerLeader], ['Stormbringer', registerStormbringer], ['Tactician', registerTactician]
     ]) {
         try { register(api); }
         catch (err) { console.error(`la-talents | ${name} registration failed`, err); }
@@ -120,9 +144,14 @@ Hooks.once('lancer-automations.ready', (api) => {
         clearTimeout(timer);
         timer = setTimeout(async () => {
             for (const actor of game.actors.filter(a => a.type === 'mech')) {
-                try { await syncMech(api, actor); await syncSkirmisherMech(api, actor); await syncGunslingerMech(api, actor); await syncHunterMech(api, actor); await syncDuelistMech(api, actor); await syncNuclearMech(api, actor); }
-                catch (err) { console.error('la-talents | sync failed for', actor.name, err); }
+                for (const sync of [syncMech, syncSkirmisherMech, syncGunslingerMech, syncHunterMech, syncDuelistMech, syncNuclearMech,
+                    syncAceMech, syncBrawlerMech, syncCombinedArmsMech, syncEngineerMech, syncJuggernautMech, syncTacticianMech, syncTechnophileMech]) {
+                    try { await sync(api, actor); }
+                    catch (err) { console.error(`la-talents | ${sync.name} failed for`, actor.name, err); }
+                }
             }
+            try { await syncBondedAll(api); }
+            catch (err) { console.error('la-talents | Bonded sync failed', err); }
         }, 500);
     };
 
