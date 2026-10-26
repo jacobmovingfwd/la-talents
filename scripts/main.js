@@ -10,6 +10,7 @@
 //  - Everything else (Hunter, Duelist, Nuclear Cavalier, Siege Specialist, Grease Monkey, Drone Commander, Ace, Bonded,
 //    Brawler, Brutal, Centimane, Combined Arms, Crack Shot, Engineer, Executioner, Hacker, Heavy Gunner, Infiltrator,
 //    Juggernaut, Leader, Stormbringer, Tactician, Technophile): see their own files
+//  - Mech systems: see systems/ (passives.js keeps constant bonuses in sync; triggered.js registers item activations)
 
 import { registerWalkingArmory } from './walking-armory.js';
 import { registerSemperVigilo } from './vanguard-overwatch.js';
@@ -42,6 +43,13 @@ import { registerLeader } from './leader.js';
 import { registerStormbringer } from './stormbringer.js';
 import { registerTactician, syncTacticianMech } from './tactician.js';
 import { syncTechnophileMech } from './technophile.js';
+import { registerSystemTriggers } from './systems/triggered.js';
+import { registerSystemDeployables } from './systems/deployables.js';
+import { syncSystemPassives } from './systems/passives.js';
+import { registerBlackIce, syncBlackIce } from './systems/black-ice.js';
+import { registerSystemReactions } from './systems/reactions.js';
+import { registerSystemProtocols } from './systems/protocols.js';
+import { registerSystemToggles } from './systems/toggles.js';
 
 const TALENT_LID = 't_vanguard';
 const BONUS_ID = 'vanguard-cqb-accuracy';
@@ -124,6 +132,18 @@ Hooks.once('lancer-automations.ready', (api) => {
     catch (err) { console.error('la-talents | Skirmisher registration failed', err); }
     try { registerGunslinger(api); }
     catch (err) { console.error('la-talents | Gunslinger registration failed', err); }
+    try { registerBlackIce(api); }
+    catch (err) { console.error('la-talents | Black ICE registration failed', err); }
+    try { registerSystemToggles(api); }
+    catch (err) { console.error('la-talents | System toggles registration failed', err); }
+    try { registerSystemProtocols(api); }
+    catch (err) { console.error('la-talents | System protocols registration failed', err); }
+    try { registerSystemReactions(api); }
+    catch (err) { console.error('la-talents | System reactions registration failed', err); }
+    try { registerSystemTriggers(api); }
+    catch (err) { console.error('la-talents | System triggers registration failed', err); }
+    try { registerSystemDeployables(api); }
+    catch (err) { console.error('la-talents | System deployables registration failed', err); }
     for (const [name, register] of [
         ['Hunter', registerHunter], ['Duelist', registerDuelist], ['Nuclear Cavalier', registerNuclearCavalier],
         ['Siege Specialist', registerSiegeSpecialist], ['Collateral Damage', registerCollateralDamage],
@@ -145,7 +165,7 @@ Hooks.once('lancer-automations.ready', (api) => {
         timer = setTimeout(async () => {
             for (const actor of game.actors.filter(a => a.type === 'mech')) {
                 for (const sync of [syncMech, syncSkirmisherMech, syncGunslingerMech, syncHunterMech, syncDuelistMech, syncNuclearMech,
-                    syncAceMech, syncBrawlerMech, syncCombinedArmsMech, syncEngineerMech, syncJuggernautMech, syncTacticianMech, syncTechnophileMech]) {
+                    syncAceMech, syncBrawlerMech, syncCombinedArmsMech, syncEngineerMech, syncJuggernautMech, syncTacticianMech, syncTechnophileMech, syncSystemPassives, syncBlackIce]) {
                     try { await sync(api, actor); }
                     catch (err) { console.error(`la-talents | ${sync.name} failed for`, actor.name, err); }
                 }
