@@ -5,11 +5,22 @@
 //  - Walking Armory: see walking-armory.js
 //  - Exemplar: see exemplar.js
 //  - Spotter: see spotter.js
+//  - Skirmisher: see skirmisher.js
+//  - Gunslinger: see gunslinger.js
+//  - Hunter, Duelist, Nuclear Cavalier, Siege Specialist, Grease Monkey, Drone Commander: see their own files
 
 import { registerWalkingArmory } from './walking-armory.js';
 import { registerSemperVigilo } from './vanguard-overwatch.js';
 import { registerExemplar } from './exemplar.js';
 import { registerSpotter } from './spotter.js';
+import { registerSkirmisher, syncSkirmisherMech } from './skirmisher.js';
+import { registerGunslinger, syncGunslingerMech } from './gunslinger.js';
+import { registerHunter, syncHunterMech } from './hunter.js';
+import { syncDuelistMech } from './duelist.js';
+import { registerNuclearCavalier } from './nuclear-cavalier.js';
+import { registerSiegeSpecialist } from './siege-specialist.js';
+import { registerGreaseMonkey } from './grease-monkey.js';
+import { registerDroneCommander } from './drone-commander.js';
 
 const TALENT_LID = 't_vanguard';
 const BONUS_ID = 'vanguard-cqb-accuracy';
@@ -88,6 +99,18 @@ Hooks.once('lancer-automations.ready', (api) => {
     catch (err) { console.error('la-talents | Exemplar registration failed', err); }
     try { registerSpotter(api); }
     catch (err) { console.error('la-talents | Spotter registration failed', err); }
+    try { registerSkirmisher(api); }
+    catch (err) { console.error('la-talents | Skirmisher registration failed', err); }
+    try { registerGunslinger(api); }
+    catch (err) { console.error('la-talents | Gunslinger registration failed', err); }
+    for (const [name, register] of [
+        ['Hunter', registerHunter], ['Nuclear Cavalier', registerNuclearCavalier],
+        ['Siege Specialist', registerSiegeSpecialist], ['Grease Monkey', registerGreaseMonkey],
+        ['Drone Commander', registerDroneCommander]
+    ]) {
+        try { register(api); }
+        catch (err) { console.error(`la-talents | ${name} registration failed`, err); }
+    }
 
     let timer = null;
     const syncAll = () => {
@@ -95,7 +118,7 @@ Hooks.once('lancer-automations.ready', (api) => {
         clearTimeout(timer);
         timer = setTimeout(async () => {
             for (const actor of game.actors.filter(a => a.type === 'mech')) {
-                try { await syncMech(api, actor); }
+                try { await syncMech(api, actor); await syncSkirmisherMech(api, actor); await syncGunslingerMech(api, actor); await syncHunterMech(api, actor); await syncDuelistMech(api, actor); }
                 catch (err) { console.error('la-talents | sync failed for', actor.name, err); }
             }
         }, 500);

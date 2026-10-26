@@ -2,10 +2,10 @@
   "id": "la-talents",
   "title": "Lancer Talent Automations",
   "description": "Automates the Vanguard talent (+1 Accuracy with CQB weapons within Range 3), Walking Armory ammo, Exemplar, and Spotter. Requires Lancer Automations.",
-  "version": "1.6.4",
+  "version": "1.9.0",
   "url": "https://github.com/jacobmovingfwd/la-talents",
   "manifest": "https://raw.githubusercontent.com/jacobmovingfwd/la-talents/main/module.json",
-  "download": "https://github.com/jacobmovingfwd/la-talents/releases/download/v1.6.4/module.zip",
+  "download": "https://github.com/jacobmovingfwd/la-talents/releases/download/v1.9.0/module.zip",
   "compatibility": {
     "minimum": "13.351",
     "verified": "13.351"
