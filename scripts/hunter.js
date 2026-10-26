@@ -5,13 +5,16 @@
 //    constrained to a line.
 //  Rank 2, Knife Juggler: your Auxiliary melee weapons gain Thrown 5 (a tag bonus, so Thrown weapons that
 //    already have it go up to 5). Weapons with no native Thrown tag are offered a "throw it?" prompt at the start
-//    of the attack. At the end of your turn every weapon you have thrown returns to you.
+//    of the attack. At the end of your turn every weapon you have thrown returns to you, so a thrown weapon
+//    is not placed on the map: it is just disabled and re-enabled when the turn ends.
 //  Rank 3, Disdainful Blade: 1/round, when you hit with a melee attack, you may also throw an Auxiliary melee
 //    weapon at any character within Range as a free action. It cannot deal bonus damage.
 //
 // "Auxiliary melee weapon" = a mech weapon of size Auxiliary and type Melee.
 
 const KJ_ID = 'hunter-knife-juggler';
+const THROWN_FLAG = 'hunterThrownWeapons';
+const getActorFlags = (actor) => actor?.getFlag('lancer-automations', THROWN_FLAG);
 
 export function hunterRank(actor) {
     const talent = actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent'
@@ -101,10 +104,34 @@ async function returnThrown(actor) {
             });
         }
     }
-    if (tokens.length) {
-        const names = tokens.map(t => t.document.flags['lancer-automations'].weaponName).join(', ');
-        await card(actor, 'KNIFE JUGGLER', `${names} returns to ${actor.name}.`);
+    // Weapons thrown without a token on the map (see keepThrownOffMap) are only recorded on the actor.
+    const names = tokens.map(t => t.document.flags['lancer-automations'].weaponName);
+    let ids = [];
+    try { ids = JSON.parse(getActorFlags(actor) || '[]'); } catch (e) { /* ignore */ }
+    for (const id of ids) {
+        const weapon = actor.items.get(id);
+        if (!weapon) continue;
+        await weapon.update({ 'system.disabled': false });
+        names.push(weapon.name);
     }
+    if (ids.length) await actor.unsetFlag('lancer-automations', THROWN_FLAG);
+    if (names.length) await card(actor, 'KNIFE JUGGLER', `${names.join(', ')} returns to ${actor.name}.`);
+}
+
+// Knife Juggler returns every thrown weapon at the end of the turn, so the weapon is never placed on the map:
+// skip lancer-automations' placement prompt (it only runs while the attack is flagged as a throw), disable the
+// weapon ourselves, and remember it so the end-of-turn return can re-enable it.
+async function keepThrownOffMap(token, data) {
+    const fs = data.flowState;
+    const weapon = data.weapon;
+    if (!fs?.la_extraData?.is_throw || !weapon) return;
+    fs.la_extraData.is_throw = false;
+    await weapon.update({ 'system.disabled': true });
+    const actor = token.actor;
+    let ids = [];
+    try { ids = JSON.parse(getActorFlags(actor) || '[]'); } catch (e) { /* ignore */ }
+    if (!ids.includes(weapon.id)) ids.push(weapon.id);
+    await actor.setFlag('lancer-automations', THROWN_FLAG, JSON.stringify(ids));
 }
 
 async function offerThrow(a, token, data) {
@@ -309,12 +336,28 @@ export function registerHunter(api) {
                 },
                 {
                     ...base,
+                    comments: 'Hunter rank 2: no need to place a thrown weapon, it returns at the end of the turn',
+                    triggers: ['onHit', 'onMiss'],
+                    awaitActivationCompletion: true,
+                    evaluate: function (triggerType, data, reactorToken, item, name, a) {
+                        const t = reactorToken.actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('hunter'));
+                        if (!t || (Number(t.system?.curr_rank) || 1) < 2) return false;
+                        return !!data.weapon && !!data.flowState?.la_extraData?.is_throw;
+                    },
+                    activationCode: async function (triggerType, data, reactorToken, item, name, a) {
+                        await keepThrownOffMap(reactorToken, data);
+                    }
+                },
+                {
+                    ...base,
                     comments: 'Hunter rank 2: thrown weapons return at the end of your turn',
                     triggers: ['onTurnEnd'],
                     outOfCombat: false,
                     evaluate: function (triggerType, data, reactorToken, item, name, a) {
                         const t = reactorToken.actor?.system?.pilot?.value?.items?.find(i => i.type === 'talent' && String(i.system?.lid ?? '').toLowerCase().includes('hunter'));
                         if (!t || (Number(t.system?.curr_rank) || 1) < 2) return false;
+                        const kept = reactorToken.actor.getFlag('lancer-automations', 'hunterThrownWeapons');
+                        if (kept && kept !== '[]') return true;
                         return canvas.tokens.placeables.some(x => {
                             const f = x.document.flags?.['lancer-automations'];
                             return f?.thrownWeapon && f?.ownerActorUuid === reactorToken.actor.uuid;
