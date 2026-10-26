@@ -56,6 +56,46 @@ Run these in a macro (type: script). Most use the selected token.
 - `game.modules.get('la-talents').api.leadershipDie()` (Leader: whoever holds a die) and `api.restLeader(actor)`
 - `game.modules.get('la-talents').api.resetBrawlerDie(actor)` and `api.resetTorrentDie(actor)` (rests)
 
+## Systems
+Mech system automations, built the same way as the talents. All are **[beta]** until play-tested. Lancer Automations only ships Custom Paint Job, so these fill gaps; systems that are plain actions or deployables are left to the Lancer system and Lancer Automations' deployable handling.
+
+- **Scanner Swarm**: +1 Accuracy on tech attacks against adjacent characters.
+- **Personalizations**: +2 HP (the GM-approved +1 Accuracy skill check is a table ruling).
+- **Reactor Stabilizer**: offers a reroll on overheating checks; the second result stands.
+- **Bulwark Mods**: ignore difficult terrain.
+- **External Batteries**: +5 Range on ranged Energy weapons, +1 Threat on melee Energy weapons; destroyed on structure damage with 1d6 AP explosive damage that can't be reduced.
+- **Stable Structure**: +1 Accuracy on a Hull or Agility save to avoid Prone or Knockback. Automatic when the save's title names Prone or Knockback; otherwise you get a one-click prompt.
+- **Armor-Lock Plating**: Bracing gives +1 difficulty against you and Prone immunity until the end of your next turn (the rest of its benefits are table rulings).
+- **Roland Chamber**: after a reload, your next Loading weapon attack deals +1d6 explosive (the Hull save for Prone is a table ruling).
+- **Black ICE Module**: tech attacks against you or adjacent allies get a "Black ICE +1" difficulty buff. Each tech attack against one of them, hit or miss, steps it to +2, then +3, then back to +1 (and it resets when combat ends). Allies hold the buff only while adjacent.
+- **Hive Drone, Tempest Drone, Sentinel Drone, Lotus Projector** [beta]: hang an aura on the deployed drone (cover and 1 AP kinetic; Hull save, 4 energy and knockback 3; 3 kinetic before attacks; reveals Hidden). Requires Templatemacro.
+- **Caltrop Launcher** [beta]: places a Burst 1 difficult-terrain zone that deals 1d3 AP explosive to mechs on first entry per round or turn end.
+- **Siege Ram**: a Ram that hits deals 2 kinetic damage (the 10 AP against objects and terrain is a table ruling).
+- **Synthetic Muscle Netting**: a card on Ram and Grapple showing the Size you count as against each target (it changes no rolls; doubled lifting and dragging is narrative).
+- **Flicker Field Projector**: after a voluntary move you gain Invisible, which ends once the next attack against you resolves (hit or miss). One instance at a time.
+- **Flash Anchor**: Flash Lock reaction cancels a push, pull, knockback or Prone on you or an ally in Sensors (2 Heat, Prone immunity until their next turn).
+- **Singularity Motivator**: Exposed Singularity reaction, a teleport of up to 1d6 spaces when your mech takes damage.
+- **//SCORPION V70.1**: when a tech attack misses you or an adjacent ally, a reaction to Impair and heat the attacker, or Jam them (the save trigger is not automated).
+- **Mimic Mesh**: pick an ally; until the end of your next turn, Battlefield Awareness is offered when a hostile acts against them.
+- **Active Camouflage**: Invisible until you take damage or the end of your next turn.
+- **Core Siphon**: +1 Accuracy on your first attack this turn, then +1 difficulty on every other attack until turn end.
+- **Type-3 Projected Shield**: nominate a character; attacks between you and them get +2 difficulty until the start of your next turn.
+- **Hunter Lock**: choose a character; your first successful attack against them each round deals +3 bonus damage.
+- **Ramjet**: +2 Boost and Knockback 2 on melee attacks until the start of your next turn (the straight-line rule is a table ruling).
+- **Retractable Profile**: toggle; +1 difficulty on ranged and tech attacks against you and Slowed while on.
+- **HyperDense Armor**: toggle; Resistance and half damage dealt beyond Range 3, Slowed while on.
+- **Siege Stabilizers**: toggle; +5 Range on ranged weapons and Immobilized while extended.
+- **Auto-Cooler**: clears all heat at the start of your next turn if you haven't taken damage, moved or overheated.
+- **Lightning Generator**: 2 energy to everything adjacent on activation, and an automatic 4 AP energy burst at the start of a turn in the Danger Zone.
+- **Plasma Gauntlet**: Danger Zone only; Agility save or 4d6 energy and Prone (half on a save), then you're Stunned (the Heat back to you is a table ruling).
+- **Aceso Stabilizer**: an ally within Range 5 gains Overshield equal to GRIT + 4 and Impaired/Jammed immunity.
+- **ASURA-Class NHP**: offers two extra quick actions or one extra full action.
+- **Kinetic Compensator**: a missed ranged attack gives your next ranged attack +1 Accuracy.
+- **Type-I Flight System**: at turn end you say whether you flew; if so, Size +1 Heat.
+- **Explosive Vents**: clearing all heat or taking stress unleashes Burst 1 for 2 Heat and 2 Burn (1/round).
+- **Deep Well Heat Sink**: Resistance to heat for the turn when you start it in the Danger Zone.
+- **Reactive Weave**: Bracing makes you Invisible until the end of your next turn and offers a free move of up to your Speed.
+
 ## Install
 - **Manifest URL:** paste this into Foundry under Add-on Modules > Install Module > Manifest URL:
   `https://raw.githubusercontent.com/jacobmovingfwd/la-talents/main/module.json`
