@@ -26,7 +26,7 @@ Talents marked **[beta]** are built but have not been play-tested yet; expect ro
 - **Gunslinger** (ranks 1-3) **[beta]**: Opening Argument (+1 Accuracy on the first Auxiliary ranged attack each turn), From the Hip (Return Fire reaction), I Kill With My Heart (Gunslinger Die). The die resets on Full Repair. For a rest, run `game.modules.get('la-talents').api.resetGunslingerDie(actor)` in a GM macro.
 - **Hacker** (ranks 1-3) **[beta]**: SNOW_CRASH, SAFE_CRACKER invade options (system actions, not automated), Last Argument of Kings.
 - **Heavy Gunner** (ranks 1-3) **[beta]**: Covering Fire with Hammerbeat and Bracketing Fire.
-- **Hunter** (ranks 1-3) **[beta]**: Lunge, Knife Juggler (Thrown 5, thrown weapons return at end of turn), Disdainful Blade.
+- **Hunter** (ranks 1-3): Lunge (fly up to 3 spaces directly toward the target before an Auxiliary melee attack, thrown attacks included), Knife Juggler (Thrown 5; a thrown weapon is disabled instead of placed on the map and returns at end of turn), Disdainful Blade (free thrown follow-up after a melee hit).
 - **Infiltrator** (ranks 1-3) **[beta]**: Prowl is a table ruling; Ambush and Mastermind are automated.
 - **Juggernaut** (ranks 1-3) **[beta]**: Momentum, Kinetic Mass Transfer, Unstoppable Force.
 - **Leader** (ranks 1-3) **[beta]**: Leadership Dice, Issue Order / Issue Command, Inspiring Presence (macro for using a held die).
