@@ -126,26 +126,115 @@ async function offerThrow(a, token, data) {
 // ---------------------------------------------------------------- Rank 1: Lunge
 
 async function lunge(a, token, data) {
-    const target = canvas.tokens.get(data.targets?.[0]?.id);
-    if (!target || a.getTokenDistance(token, target) <= 1) return;
+    // Targets are usually not chosen yet at this point (the Attack HUD picks them later), so Lunge
+    // works with or without a pre-selected target. Reach is 3 flown + the greater of the weapon's Threat and Thrown range. Only an adjacent target skips Lunge (a player may lunge just to become Engaged).
+    // Thrown counts as a melee attack, so the attack reach is the greater of Threat and Thrown range.
+    const ranges = a.getMaxWeaponRanges_WithBonus(data.weapon) ?? {};
+    const threat = Math.max(Number(ranges.Threat) || 1, Number(ranges.Thrown) || 0);
+    const REACH = threat + 3;
+    let target = canvas.tokens.get(data.targets?.[0]?.id) ?? null;
+    if (target && a.getTokenDistance(token, target) <= 1) return;
+    if (target && a.getTokenDistance(token, target) > REACH) target = null;
+
     const { confirmed } = await a.askCard({
         title: 'LUNGE',
-        description: `Fly up to <b>3 spaces</b> toward <b>${target.name}</b> before attacking with <b>${data.weapon.name}</b>? Ignores engagement and doesn't provoke reactions.`,
+        description: target
+            ? `Fly up to <b>3 spaces</b> toward <b>${target.name}</b> before attacking with <b>${data.weapon.name}</b>? Ignores engagement and doesn't provoke reactions.`
+            : `Fly up to <b>3 spaces</b> toward a target before attacking with <b>${data.weapon.name}</b>? Ignores engagement and doesn't provoke reactions.`,
         yesText: 'Lunge',
         noText: 'Skip',
         owner: token,
         originToken: token,
-        relatedToken: target
+        relatedToken: target ?? undefined
     });
     if (!confirmed) return;
-    if (!(await a.consumeOncePerRound(token, 'hunter_lunge'))) return;
-    await a.moveToken(token, {
-        free: true,
-        action: 'fly',
-        range: 3,
-        title: 'LUNGE',
-        description: `Fly up to 3 spaces toward ${target.name}.`
-    });
+
+    // If Lunge picks the target itself and is then cancelled, put the targets back as they were.
+    const prevTargetIds = (data.targets ?? []).map(t => t?.id).filter(Boolean);
+    const prevTargetUuids = prevTargetIds.map(id => canvas.tokens.get(id)?.document?.uuid).filter(Boolean);
+    let targetSetByLunge = false;
+    const undoTarget = () => {
+        if (!targetSetByLunge) return;
+        canvas.tokens.setTargets(prevTargetIds);
+        data.flowState?.data?.acc_diff?.replaceTargets?.(prevTargetUuids);
+    };
+
+    if (!target) {
+        const picked = await a.chooseToken(token, {
+            range: REACH,
+            count: 1,
+            includeSelf: false,
+            title: 'LUNGE',
+            description: `Choose the target to lunge toward (within ${REACH} spaces: 3 flown + attack reach ${threat}).`
+        });
+        target = picked?.[0] ?? null;
+        if (!target) return;
+        if (a.getTokenDistance(token, target) <= 1) return;
+        canvas.tokens.setTargets([target.id]);
+        targetSetByLunge = true;
+        // The Attack HUD built its target list before this prompt, so hand it the new target too.
+        data.flowState?.data?.acc_diff?.replaceTargets?.([target.document.uuid]);
+    }
+
+    // "Fly up to 3 spaces directly toward the target": only spaces between you and the target count, i.e.
+    // spaces on a shortest path (flown + remaining distance == the starting distance). The picker lights only
+    // the spaces toward the target (like Knockback lights those away), but it can't refuse a click, so the
+    // plan is checked BEFORE anything moves. A space outside the rule offers: ignore, choose again, or stop.
+    const origin = token.center;
+    const tc = target.center;
+    const behind = { x: origin.x + (origin.x - tc.x), y: origin.y + (origin.y - tc.y) };
+    const spaces = (from, to) => {
+        const m = canvas.grid.measurePath([from, to]);
+        return Math.round((m.spaces ?? (m.distance / (canvas.grid.distance || 1))) || 0);
+    };
+    const startDist = a.getTokenDistance(token, target);
+    const centerOffset = spaces(origin, tc) - startDist;   // edge-to-edge vs centre-to-centre (token size)
+
+    let plan = null;
+    for (let attempt = 0; attempt < 10 && !plan; attempt++) {
+        const plans = await a.moveTokenRuler(token, {
+            free: true,
+            action: 'fly',
+            range: 3,
+            planOnly: true,
+            urgent: true,
+            awayFrom: behind,
+            title: 'LUNGE',
+            description: `Fly up to 3 spaces directly toward ${target.name}. Only spaces between you and the target are lit.`
+        });
+        const candidate = plans?.[0];
+        if (!candidate?.path || candidate.path.length < 2) { undoTarget(); return; }   // cancelled: nothing moved, nothing spent
+        const end = candidate.path.at(-1);
+        const endCenter = token.document.getCenterPoint({ x: end.x, y: end.y });
+        const flown = spaces(origin, endCenter);
+        const remaining = spaces(endCenter, tc) - centerOffset;
+        if (flown >= 1 && flown <= 3 && remaining >= 1 && flown + remaining === startDist) { plan = candidate; break; }
+
+        ui.notifications.warn(`Lunge: that space isn't within 3 spaces directly toward ${target.name}.`);
+        const pick = await a.startChoiceCard({
+            title: 'LUNGE',
+            icon: 'fas fa-triangle-exclamation',
+            description: `That space isn't within 3 spaces directly toward <b>${target.name}</b> (between you and the target).`,
+            originToken: token,
+            userIdControl: a.getTokenOwnerUserId(token),
+            choices: [
+                { text: 'Ignore restrictions and fly there', icon: 'fas fa-ban', callback: async () => {} },
+                { text: 'Choose another space', icon: 'fas fa-location-crosshairs', callback: async () => {} },
+                { text: 'Stop (cancel Lunge)', icon: 'fas fa-hand', callback: async () => {} }
+            ]
+        });
+        if (pick?.choiceIdx === 0) plan = candidate;
+        else if (pick?.choiceIdx !== 1) { undoTarget(); return; }
+    }
+    if (!plan) { undoTarget(); return; }
+
+    // Commit exactly as the picker would for a free move (no drag flag), then wait for the animation.
+    await token.document.move(plan.path.slice(1).map(w => ({ elevation: token.document.elevation, ...w })), { method: 'api', showRuler: true });
+    for (let i = 0; i < 240 && token.document.movement?.state === 'pending'; i++) await new Promise(r => setTimeout(r, 50));
+    if (token.document.object?.movementAnimationPromise) await token.document.object.movementAnimationPromise;
+
+    // The use is only spent if the flight actually happens.
+    await a.consumeOncePerRound(token, 'hunter_lunge');
 }
 
 // ---------------------------------------------------------------- Rank 3: Disdainful Blade
@@ -196,7 +285,7 @@ export function registerHunter(api) {
         checkReaction: false, activationType: 'code', activationMode: 'instead' };
 
     api.registerDefaultGeneralReactions({
-        // Registered before Lunge so the throw decision comes first (a thrown attack does not lunge).
+        // Registered before Lunge so the throw decision comes first (a thrown attack can still lunge).
         'Hunter - Knife Juggler': {
             category: 'General',
             reactions: [
@@ -252,9 +341,7 @@ export function registerHunter(api) {
                         const w = data.weapon;
                         if (!w || w.type !== 'mech_weapon' || String(w.system?.size ?? '').toLowerCase() !== 'auxiliary') return false;
                         if (String(w.system?.active_profile?.type ?? w.system?.type ?? '').toUpperCase() !== 'MELEE') return false;
-                        if (data.flowState?.la_extraData?.is_throw) return false;
-                        if (!data.targets?.length) return false;
-                        return a.checkGate(reactorToken, 'hunter_lunge');
+                                                return a.checkGate(reactorToken, 'hunter_lunge');
                     },
                     activationCode: async function (triggerType, data, reactorToken, item, name, a) {
                         await lunge(a, reactorToken, data);
