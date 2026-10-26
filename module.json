@@ -32,6 +32,10 @@
         "compatibility": {
           "minimum": "4.4.0"
         }
+      },
+      {
+        "id": "templatemacro",
+        "type": "module"
       }
     ]
   },
