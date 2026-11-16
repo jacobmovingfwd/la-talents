@@ -15,7 +15,6 @@ Everything below is open. Groups are ordered by how well Lancer Automations (LA)
 
 ### Passive bonuses (check the mech, no activation)
 - [ ] **Scanner Swarm**: tech attack on an adjacent target shows +1 Accuracy in the HUD; on a target 2+ spaces away it does not.
-- [ ] **Personalizations**: max HP is +2 with the system installed, back to normal when removed.
 - [ ] **Reactor Stabilizer**: fail an overheating (stress) roll; you are offered a reroll and the second result stands.
 - [ ] **Bulwark Mods**: move through difficult terrain with no extra cost.
 - [ ] **External Batteries**: Energy ranged weapon shows Range +5, Energy melee shows Threat +1, other weapons unchanged. Then take structure damage: the system is destroyed and a 1d6 AP explosive damage card appears.

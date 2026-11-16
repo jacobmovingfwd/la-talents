@@ -101,7 +101,6 @@ Talents marked **[beta]** are built but have not been play-tested yet; expect ro
 Mech system automations, built the same way as the talents. All are **[beta]** until play-tested. Lancer Automations only ships Custom Paint Job, so these fill gaps; systems that are plain actions or deployables are left to the Lancer system and Lancer Automations' deployable handling.
 
 - **Scanner Swarm**: +1 Accuracy on tech attacks against adjacent characters.
-- **Personalizations**: +2 HP (the GM-approved +1 Accuracy skill check is a table ruling).
 - **Reactor Stabilizer**: offers a reroll on overheating checks; the second result stands.
 - **Bulwark Mods**: ignore difficult terrain.
 - **External Batteries**: +5 Range on ranged Energy weapons, +1 Threat on melee Energy weapons; destroyed on structure damage with 1d6 AP explosive damage that can't be reduced.

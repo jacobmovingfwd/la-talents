@@ -1,6 +1,6 @@
 // Passive system automations, kept as constant bonuses on the mech while the system is installed and working. [beta]
 //  Scanner Swarm (HORUS): +1 Accuracy on tech attacks against adjacent characters.
-//  Personalizations (GMS): +2 HP. (The +1 Accuracy on a skill check the GM approves is a table ruling.)
+//  (Personalizations is not here: core Lancer already applies its +2 HP.)
 //  Reactor Stabilizer (HA): offers a reroll on overheating checks; the second result stands.
 //  Bulwark Mods (IPS-N): ignore difficult terrain.
 //  External Batteries (HA): weapons that deal Energy gain +5 Range (ranged) or +1 Threat (melee). The destruction on
@@ -24,10 +24,6 @@ const TABLE = [
                 return typeof d === 'number' && d <= 1;
             }
         }]
-    },
-    {
-        lid: 'ms_personalizations',
-        bonuses: [{ id: 'sys-personalizations', name: 'Personalizations (+2 HP)', type: 'stat', stat: 'system.hp.max', val: 2 }]
     },
     {
         lid: 'ms_reactor_stabilizer',
@@ -70,4 +66,13 @@ const TABLE = [
     }
 ];
 
-export const syncSystemPassives = (api, mech) => syncSystemBonuses(api, mech, TABLE);
+// Bonuses an earlier version added that core Lancer already handles; removed from any mech that still carries them.
+const RETIRED_IDS = ['sys-personalizations'];
+
+export async function syncSystemPassives(api, mech) {
+    const have = api.getConstantBonuses(mech);
+    for (const id of RETIRED_IDS) {
+        if (have.some(b => b.id === id)) await api.removeConstantBonus(mech, id);
+    }
+    return syncSystemBonuses(api, mech, TABLE);
+}
