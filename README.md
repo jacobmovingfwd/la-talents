@@ -7,7 +7,62 @@ Talent automations for Foundry VTT, built on top of [Lancer Automations](https:/
 - Lancer system
 - Lancer Automations 4.4.0 or newer
 
-## Talents
+## Install
+- **Manifest URL:** paste this into Foundry under Add-on Modules > Install Module > Manifest URL:
+  `https://raw.githubusercontent.com/jacobmovingfwd/la-talents/main/module.json`
+- **Manual:** clone or copy this folder into your Foundry `Data/modules/` folder. The folder name must be `la-talents`.
+
+### Macros
+Most automations are passive: they work as soon as the module is enabled, and nobody needs a macro. These talents need nothing extra: Vanguard, Walking Armory, Exemplar, Spotter.
+
+A few features have no trigger in Lancer (a quick action with no item to click, a rest, a choice you make once). Those ship as ready-made macros in the **Lancer Talent Macros** compendium, so nobody has to write any code.
+
+**Use a macro (player)**
+1. Open the **Compendium Packs** sidebar tab and open **Lancer Talent Macros**.
+2. Drag the macros for your talents onto your hotbar.
+3. Select your mech's token.
+4. Click the macro and follow the prompt.
+
+**Set up (GM, once)**
+1. Make sure players can use script macros: **Settings > Configure Permissions > Use Script Macros**.
+2. Tell each player which macros match their talents (list below).
+3. Keep the **GM** macros for yourself: Supply Drop and the four Rest macros.
+
+**Macros by talent or system**
+- Siege Specialist: **Jackhammer**
+- Grease Monkey: **Unsanctioned Capacity Upgrade**; GM only: **Supply Drop** and **Supply Drop: New Mission**
+- Drone Commander: **Shepherd: Move a Drone**, **Shepherd: +5 HP to Existing Drones**, **Invigorate**
+- Duelist: **Feint / Trip** (also shows your Blademaster dice)
+- Ace 3: **Supersonic Spin-Up**
+- Bonded: **Choose Bondmate**
+- Engineer: **Refit Prototype**
+- Leader: **Use Leadership Die** (whoever holds a die)
+- GM only, for rests: **Rest: Leader**, **Rest: Gunslinger Die**, **Rest: Brawler Die**, **Rest: Torrent Die**. Select the resting mech token(s) first.
+
+The Gunslinger Die and Leadership Dice also reset on a Full Repair.
+
+**Run from your own macro instead (optional)**
+Create a Script macro and paste a line like this. Most use the selected token.
+- `game.modules.get('la-talents').api.jackhammer()`
+- `game.modules.get('la-talents').api.capacityUpgrade()`
+- `game.modules.get('la-talents').api.supplyDrop()` (GM; add `{ reset: true }` for a new mission)
+- `game.modules.get('la-talents').api.shepherd()` and `api.applyShepherdHP()`
+- `game.modules.get('la-talents').api.invigorate()`
+- `game.modules.get('la-talents').api.blademaster()`
+- `game.modules.get('la-talents').api.spinUp()`
+- `game.modules.get('la-talents').api.setBondmate()`
+- `game.modules.get('la-talents').api.refitPrototype()`
+- `game.modules.get('la-talents').api.leadershipDie()`
+- Rests (GM): `api.resetGunslingerDie(actor)`, `api.restLeader(actor)`, `api.resetBrawlerDie(actor)`, `api.resetTorrentDie(actor)`
+
+**Editing the compendium (developers)**
+- Macro source lives in `packs/_source/macros/*.json`.
+- Rebuild the pack after editing: `npm install --no-save @foundryvtt/foundryvtt-cli && node build-packs.mjs`.
+- Commit both `packs/_source/` and `packs/macros/`.
+
+## What's in Here
+
+### Talents
 Talents marked **[beta]** are built but have not been play-tested yet; expect rough edges.
 
 - **Ace** (ranks 1-3) **[beta]**: Acrobatics (+1 Accuracy on Agility checks while flying, fly 2 after a miss), Afterburners, Supersonic (spin-up macro).
@@ -40,23 +95,7 @@ Talents marked **[beta]** are built but have not been play-tested yet; expect ro
 - **Vanguard** (ranks 1-3): +1 Accuracy with CQB weapons within Range 3, ignore cover with them, and Semper Vigilo Overwatch.
 - **Walking Armory** (ranks 1-3): Ammo Case ammo types, charge costs, Efficiency refunds.
 
-### Macros
-Run these in a macro (type: script). Most use the selected token.
-- `game.modules.get('la-talents').api.jackhammer()`
-- `game.modules.get('la-talents').api.capacityUpgrade()`
-- `game.modules.get('la-talents').api.supplyDrop()` (GM; add `{ reset: true }` for a new mission)
-- `game.modules.get('la-talents').api.shepherd()`
-- `game.modules.get('la-talents').api.applyShepherdHP()` (drones already on the scene)
-- `game.modules.get('la-talents').api.resetGunslingerDie(actor)`
-- `game.modules.get('la-talents').api.blademaster()` (Feint and Trip, shows your dice)
-- `game.modules.get('la-talents').api.invigorate()`
-- `game.modules.get('la-talents').api.spinUp()` (Ace 3)
-- `game.modules.get('la-talents').api.setBondmate()` (Bonded)
-- `game.modules.get('la-talents').api.refitPrototype()` (Engineer)
-- `game.modules.get('la-talents').api.leadershipDie()` (Leader: whoever holds a die) and `api.restLeader(actor)`
-- `game.modules.get('la-talents').api.resetBrawlerDie(actor)` and `api.resetTorrentDie(actor)` (rests)
-
-## Systems
+### Systems
 Mech system automations, built the same way as the talents. All are **[beta]** until play-tested. Lancer Automations only ships Custom Paint Job, so these fill gaps; systems that are plain actions or deployables are left to the Lancer system and Lancer Automations' deployable handling.
 
 - **Scanner Swarm**: +1 Accuracy on tech attacks against adjacent characters.
@@ -96,10 +135,7 @@ Mech system automations, built the same way as the talents. All are **[beta]** u
 - **Deep Well Heat Sink**: Resistance to heat for the turn when you start it in the Danger Zone.
 - **Reactive Weave**: Bracing makes you Invisible until the end of your next turn and offers a free move of up to your Speed.
 
-## Install
-- **Manifest URL:** paste this into Foundry under Add-on Modules > Install Module > Manifest URL:
-  `https://raw.githubusercontent.com/jacobmovingfwd/la-talents/main/module.json`
-- **Manual:** clone or copy this folder into your Foundry `Data/modules/` folder. The folder name must be `la-talents`.
+
 
 ## License
 GPL-3.0. See [LICENSE](LICENSE).

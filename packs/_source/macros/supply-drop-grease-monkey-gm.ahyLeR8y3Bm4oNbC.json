@@ -1,0 +1,24 @@
+{
+  "_id": "ahyLeR8y3Bm4oNbC",
+  "name": "Supply Drop (Grease Monkey, GM)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.supplyDrop) return ui.notifications.warn('la-talents: supplyDrop is not available. Is Lancer Automations enabled and the world fully loaded?');\nif (!game.user.isGM) return ui.notifications.warn('Run this as the GM.');\napi.supplyDrop();",
+  "folder": null,
+  "sort": 300000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!ahyLeR8y3Bm4oNbC"
+}

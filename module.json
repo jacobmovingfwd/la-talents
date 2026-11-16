@@ -18,6 +18,19 @@
   "esmodules": [
     "scripts/main.js"
   ],
+  "packs": [
+    {
+      "name": "macros",
+      "label": "Lancer Talent Macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "system": "lancer",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
   "relationships": {
     "systems": [
       {

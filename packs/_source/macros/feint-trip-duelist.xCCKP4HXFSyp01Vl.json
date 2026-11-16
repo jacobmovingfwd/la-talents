@@ -1,0 +1,24 @@
+{
+  "_id": "xCCKP4HXFSyp01Vl",
+  "name": "Feint / Trip (Duelist)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.blademaster) return ui.notifications.warn('la-talents: blademaster is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.blademaster();",
+  "folder": null,
+  "sort": 800000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!xCCKP4HXFSyp01Vl"
+}

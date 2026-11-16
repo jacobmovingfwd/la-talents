@@ -1,0 +1,24 @@
+{
+  "_id": "W7EJ9yjAhcwfAWTu",
+  "name": "Choose Bondmate (Bonded)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.setBondmate) return ui.notifications.warn('la-talents: setBondmate is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.setBondmate();",
+  "folder": null,
+  "sort": 1000000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!W7EJ9yjAhcwfAWTu"
+}

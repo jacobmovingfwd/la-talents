@@ -1,0 +1,24 @@
+{
+  "_id": "eolEu6pJeU5bBUS9",
+  "name": "Rest: Brawler Die (GM)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.resetBrawlerDie) return ui.notifications.warn('la-talents: resetBrawlerDie is not available. Is Lancer Automations enabled and the world fully loaded?');\nif (!game.user.isGM) return ui.notifications.warn('Run this as the GM.');\nconst tokens = canvas.tokens.controlled;\nif (!tokens.length) return ui.notifications.warn('Select the resting mech token(s) first.');\nfor (const t of tokens) await api.resetBrawlerDie(t.actor);",
+  "folder": null,
+  "sort": 1500000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!eolEu6pJeU5bBUS9"
+}

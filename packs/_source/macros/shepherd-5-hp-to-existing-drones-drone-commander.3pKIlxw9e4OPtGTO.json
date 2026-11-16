@@ -1,0 +1,24 @@
+{
+  "_id": "3pKIlxw9e4OPtGTO",
+  "name": "Shepherd: +5 HP to Existing Drones (Drone Commander)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.applyShepherdHP) return ui.notifications.warn('la-talents: applyShepherdHP is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.applyShepherdHP();",
+  "folder": null,
+  "sort": 600000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!3pKIlxw9e4OPtGTO"
+}

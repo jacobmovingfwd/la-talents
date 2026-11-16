@@ -1,0 +1,24 @@
+{
+  "_id": "wKE6dH90WghhNCFw",
+  "name": "Unsanctioned Capacity Upgrade (Grease Monkey)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.capacityUpgrade) return ui.notifications.warn('la-talents: capacityUpgrade is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.capacityUpgrade();",
+  "folder": null,
+  "sort": 200000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!wKE6dH90WghhNCFw"
+}

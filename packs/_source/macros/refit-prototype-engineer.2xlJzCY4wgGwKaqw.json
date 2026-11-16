@@ -1,0 +1,24 @@
+{
+  "_id": "2xlJzCY4wgGwKaqw",
+  "name": "Refit Prototype (Engineer)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.refitPrototype) return ui.notifications.warn('la-talents: refitPrototype is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.refitPrototype();",
+  "folder": null,
+  "sort": 1100000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!2xlJzCY4wgGwKaqw"
+}

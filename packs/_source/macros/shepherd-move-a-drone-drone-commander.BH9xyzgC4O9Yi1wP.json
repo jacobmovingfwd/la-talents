@@ -1,0 +1,24 @@
+{
+  "_id": "BH9xyzgC4O9Yi1wP",
+  "name": "Shepherd: Move a Drone (Drone Commander)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.shepherd) return ui.notifications.warn('la-talents: shepherd is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.shepherd();",
+  "folder": null,
+  "sort": 500000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!BH9xyzgC4O9Yi1wP"
+}

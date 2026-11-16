@@ -1,0 +1,24 @@
+{
+  "_id": "HpqTkgezb5PC1v1b",
+  "name": "Supersonic Spin-Up (Ace 3)",
+  "type": "script",
+  "author": null,
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get('la-talents')?.api;\nif (!api?.spinUp) return ui.notifications.warn('la-talents: spinUp is not available. Is Lancer Automations enabled and the world fully loaded?');\napi.spinUp();",
+  "folder": null,
+  "sort": 900000,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "coreVersion": "13.351",
+    "systemId": null,
+    "systemVersion": null,
+    "createdTime": null,
+    "modifiedTime": null,
+    "lastModifiedBy": null
+  },
+  "_key": "!macros!HpqTkgezb5PC1v1b"
+}
