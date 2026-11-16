@@ -1,5 +1,7 @@
 # Lancer Talent Automations (`la-talents`)
 
+**Current Version: 1.13.0**
+
 Talent automations for Foundry VTT, built on top of [Lancer Automations](https://github.com/Agraael/lancer-automations).
 
 ## Requirements
